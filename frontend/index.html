@@ -1,1 +1,38 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Character Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>3D Character Generator</h1>
+        <p>Upload a character photo and generate a 3D version using AI</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*" required>
+            <button id="generateBtn" onclick="generateCharacter()">Generate 3D Character</button>
+        </div>
+        
+        <div id="loadingSection" class="hidden">
+            <div class="spinner"></div>
+            <p>Generating your 3D character...</p>
+        </div>
+        
+        <div id="resultSection" class="hidden">
+            <h3>Your 3D Character:</h3>
+            <img id="resultImage" alt="Generated 3D Character">
+            <button onclick="resetApp()">Generate Another</button>
+        </div>
+        
+        <div id="errorSection" class="hidden">
+            <p id="errorMessage"></p>
+            <button onclick="resetApp()">Try Again</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
