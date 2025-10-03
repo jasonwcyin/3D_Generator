@@ -91,7 +91,7 @@ app.post('/api/generate-3d', async (req, res) => {
                     '-shutterstock.com',
                     '-istockphoto.com'
                 ],
-                image_format_filter: ['jpg', 'png', 'webp'],
+                image_format_filter: ['jpeg', 'png', 'webp'],
                 messages: [
                     {
                         role: 'user',
