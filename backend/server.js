@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
     origin: [
         'http://localhost:3000',
-        'https://yourusername.github.io' // Replace with your GitHub Pages URL
+        'https://jasonwcyin.github.io' // Replace with your GitHub Pages URL
     ]
 }));
 app.use(express.json({ limit: '50mb' }));
