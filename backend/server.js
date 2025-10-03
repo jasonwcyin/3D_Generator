@@ -63,7 +63,9 @@ app.post('/api/generate-3d', async (req, res) => {
                 }
             }
         );
-        
+
+        console.log("Perplexity Response:", JSON.stringify(perplexityResponse.data, null, 2));
+
         // Extract the generated image URL from response
         const generatedContent = perplexityResponse.data.choices.message.content;
         
