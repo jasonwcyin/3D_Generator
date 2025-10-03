@@ -1,1 +1,2 @@
-
+# Exclude a specific file
+.env
