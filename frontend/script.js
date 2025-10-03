@@ -1,5 +1,5 @@
 // Configuration
-const API_BASE_URL = 'https://your-app-name.onrender.com'; // Replace with your Render URL
+const API_BASE_URL = 'https://threed-character-backend.onrender.com'; // Replace with your Render URL
 
 async function generateCharacter() {
     const fileInput = document.getElementById('imageInput');
