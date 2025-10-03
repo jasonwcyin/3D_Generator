@@ -3,53 +3,42 @@ const API_BASE_URL = 'https://threed-character-backend.onrender.com'; // Replace
 
 async function generateCharacter() {
     const fileInput = document.getElementById('imageInput');
-    const file = fileInput.files;
-    
+    const file = fileInput.files[0];
     if (!file) {
         showError('Please select an image file');
         return;
     }
-    
-    if (!file.type.startsWith('image/')) {
+    if (!file.type || !file.type.startsWith('image/')) {
         showError('Please select a valid image file');
         return;
     }
-    
+    console.log("Image selected:", file.name, file.type, file.size);
     showLoading();
-    
     try {
-        // Convert image to base64
         const base64Image = await fileToBase64(file);
-        
-        // Call backend API
+        console.log("Base64 ready, sending to backend...");
         const response = await fetch(`${API_BASE_URL}/api/generate-3d`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 image: base64Image,
-                prompt: 'Transform this character into a detailed 3D rendered version, maintaining all key features, colors, and personality while adding dimensional depth, realistic lighting, and modern 3D animation style'
+                prompt: "Transform this character into a detailed 3D rendered version, maintaining all key features, colors, and personality while adding dimensional depth, realistic lighting, and modern 3D animation style"
             })
         });
-        
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-        
+        console.log("Response received:", response.status);
         const result = await response.json();
-        
+        console.log("Result JSON:", result);
         if (result.success) {
             showResult(result.imageUrl);
         } else {
             showError(result.error || 'Failed to generate 3D character');
         }
-        
     } catch (error) {
         console.error('Error:', error);
         showError('Failed to connect to server. Please try again.');
     }
 }
+
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
