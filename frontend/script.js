@@ -8,10 +8,7 @@ async function generateCharacter() {
         showError('Please select an image file');
         return;
     }
-    if (!file.type || !file.type.startsWith('image/')) {
-        showError('Please select a valid image file');
-        return;
-    }
+
     console.log("Image selected:", file.name, file.type, file.size);
     showLoading();
     try {
