@@ -3,15 +3,9 @@ const API_BASE_URL = 'https://threed-character-backend.onrender.com'; // Replace
 
 async function generateCharacter() {
     const fileInput = document.getElementById('imageInput');
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        showError('Please select an image file');
-        return;
-    }
+
     const file = fileInput.files[0];
-    if (!file.type || !file.type.startsWith('image/')) {
-        showError('Please select a valid image file');
-        return;
-    }
+
     console.log("Image selected:", file.name, file.type, file.size);
     showLoading();
     try {
