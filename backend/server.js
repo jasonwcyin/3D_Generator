@@ -25,14 +25,14 @@ app.get('/health', (req, res) => {
 app.post('/api/generate-3d', async (req, res) => {
     try {
         const { image, prompt } = req.body;
-        
+
         if (!image || !prompt) {
             return res.status(400).json({
                 success: false,
                 error: 'Image and prompt are required'
             });
         }
-        
+
         // Call Perplexity Sonar API
         const perplexityResponse = await axios.post(
             'https://api.perplexity.ai/chat/completions',
@@ -42,16 +42,8 @@ app.post('/api/generate-3d', async (req, res) => {
                     {
                         role: 'user',
                         content: [
-                            {
-                                type: 'text',
-                                text: prompt
-                            },
-                            {
-                                type: 'image_url',
-                                image_url: {
-                                    url: image
-                                }
-                            }
+                            { type: 'text', text: prompt },
+                            { type: 'image_url', image_url: { url: image } }
                         ]
                     }
                 ]
@@ -64,47 +56,60 @@ app.post('/api/generate-3d', async (req, res) => {
             }
         );
 
-        console.log("Perplexity Response:", JSON.stringify(perplexityResponse.data, null, 2));
-        if (perplexityResponse.data.error) {
-              console.error("Perplexity API error:", perplexityResponse.data.error);
-        }
+        console.log("Perplexity API raw response:", JSON.stringify(perplexityResponse.data, null, 2));
 
-
-        // Extract the generated image URL from response
-        const generatedContent = perplexityResponse.data.choices.message.content;
-        
-        // Parse the response to extract image URL
-        // Note: This parsing logic may need adjustment based on actual Perplexity response format
+        // Defensive response extraction
         let imageUrl = null;
-        
-        // Look for image URLs in the response
-        const imageUrlRegex = /https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp)/i;
-        const match = generatedContent.match(imageUrlRegex);
-        
-        if (match) {
-            imageUrl = match;
+        let textResult = null;
+
+        const choices = perplexityResponse.data.choices;
+        if (
+            choices &&
+            choices[0] &&
+            choices[0].message &&
+            choices[0].message.content
+        ) {
+            const content = choices[0].message.content;
+            // Handle multimodal: content could be a string or array
+            if (Array.isArray(content)) {
+                for (const item of content) {
+                    if (item.type === 'image_url' && item.image_url && item.image_url.url) {
+                        imageUrl = item.image_url.url;
+                    }
+                    if (item.type === 'text' && item.text && !textResult) {
+                        textResult = item.text;
+                    }
+                }
+            } else if (typeof content === 'string') {
+                textResult = content;
+            }
         }
-        
-        if (!imageUrl) {
+
+        // Respond with whichever is available
+        if (imageUrl) {
+            return res.json({
+                success: true,
+                imageUrl,
+                textResult: textResult || "Image generated! No additional instructions."
+            });
+        } else if (textResult) {
+            return res.json({
+                success: false,
+                error: 'No 3D image generated. AI tips and workflow instructions returned instead.',
+                textResult
+            });
+        } else {
             return res.status(500).json({
                 success: false,
-                error: 'No image generated in response'
+                error: 'Unexpected Perplexity API response, no image or instructional text returned.',
+                data: perplexityResponse.data
             });
         }
-        
-        res.json({
-            success: true,
-            imageUrl: imageUrl,
-            originalResponse: generatedContent
-        });
-        
     } catch (error) {
-        console.error('Error generating 3D character:', error.response?.data || error.message);
-        
+        console.error('Error generating 3D character:', error.response?.data || error.message, error.stack);
         res.status(500).json({
             success: false,
-            error: 'Failed to generate 3D character',
-            details: error.response?.data?.error || error.message
+            error: error.response?.data?.error || error.message || 'Internal server error'
         });
     }
 });
