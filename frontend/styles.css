@@ -96,3 +96,52 @@ button:disabled {
 #errorSection {
     color: #e74c3c;
 }
+
+.image-container {
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover {
+    transform: translateY(-5px);
+}
+
+.image-gallery img {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.image-gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+}
+
+.text-result {
+    line-height: 1.6;
+    color: #333;
+}
+
+.text-result h2, .text-result h3, .text-result h4 {
+    color: #2c3e50;
+    margin: 15px 0 10px 0;
+}
+
+.text-result p {
+    margin: 10px 0;
+}
+
+details {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+details summary {
+    padding: 5px;
+    background: #f8f9fa;
+    border-radius: 3px;
+}
+
+details[open] summary {
+    margin-bottom: 10px;
+}
+
